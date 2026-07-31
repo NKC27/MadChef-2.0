@@ -22,6 +22,14 @@ const typeDefs = gql`
     link: String
   }
 
+  type SpoonacularRecipe {
+    recipeId: ID!
+    title: String!
+    description: String
+    image: String
+    link: String
+  }
+
   input inputRecipe {
     recipeId: Int
     title: String
@@ -32,6 +40,8 @@ const typeDefs = gql`
 
   type Query {
     me: User
+    findRecipesByIngredients(ingredients: [String!]!): [SpoonacularRecipe]
+    getRecipeInformation(recipeId: ID!): SpoonacularRecipe
   }
 
   type Mutation {

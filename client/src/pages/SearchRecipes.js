@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Jumbotron,
   Container,
@@ -7,50 +7,43 @@ import {
   Button,
   Card,
   CardColumns,
-} from "react-bootstrap";
-import Auth from "../utils/auth";
-import { saveRecipeIds, getSavedRecipesIds } from "../utils/localStorage";
-import { useMutation } from "@apollo/client";
-import { SAVE_RECIPE } from "../utils/mutations";
-import "./searchRecipes.scss";
+} from 'react-bootstrap';
+import Auth from '../utils/auth';
+import { saveRecipeIds, getSavedRecipesIds } from '../utils/localStorage';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { FIND_RECIPES_BY_INGREDIENTS } from '../utils/queries';
+import { SAVE_RECIPE } from '../utils/mutations';
+import './searchRecipes.scss';
 
 const SearchRecipes = () => {
-  const [searchedRecipes, setSearchedRecipes] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState('');
   const [savedRecipeIds, setSavedRecipeIds] = useState(getSavedRecipesIds());
 
-  const [saveRecipe, { error }] = useMutation(SAVE_RECIPE);
+  const [saveRecipe] = useMutation(SAVE_RECIPE);
+
+  const [findRecipes, { data }] = useLazyQuery(FIND_RECIPES_BY_INGREDIENTS);
+
+  const searchedRecipes = data?.findRecipesByIngredients || [];
 
   useEffect(() => {
-    return () => saveRecipeIds(savedRecipeIds);
-  });
+    saveRecipeIds(savedRecipeIds);
+  }, [savedRecipeIds]);
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    if (!searchInput) {
-      return false;
+    if (!searchInput.trim()) {
+      return;
     }
 
     try {
-      const response = await fetch(
-        `https://api.spoonacular.com/recipes/findByIngredients?apiKey=5d21fcc224ed4f1caff20062b5740f70&ingredients=${searchInput}`
-      );
+      await findRecipes({
+        variables: {
+          ingredients: [searchInput.trim()],
+        },
+      });
 
-      if (!response.ok) {
-        throw new Error("Something went wrong!");
-      }
-
-      const meals = await response.json();
-
-      const recipeData = meals.map((data) => ({
-        recipeId: data.id,
-        title: data.title,
-        description: "",
-        image: data.image || "",
-      }));
-      setSearchedRecipes(recipeData);
-      setSearchInput("");
+      setSearchInput('');
     } catch (err) {
       console.error(err);
     }
@@ -58,20 +51,29 @@ const SearchRecipes = () => {
 
   const handleSaveRecipe = async (recipeId) => {
     const recipeToSave = searchedRecipes.find(
-      (data) => data.recipeId === recipeId
+      (recipe) => recipe.recipeId === recipeId,
     );
+
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
-    if (!token) {
-      return false;
+    if (!token || !recipeToSave) {
+      return;
     }
 
     try {
-      const { data } = await saveRecipe({
-        variables: { newRecipe: { ...recipeToSave } },
+      await saveRecipe({
+        variables: {
+          newRecipe: {
+            recipeId: Number(recipeToSave.recipeId),
+            title: recipeToSave.title,
+            description: recipeToSave.description || '',
+            image: recipeToSave.image || '',
+            link: recipeToSave.link || '',
+          },
+        },
       });
 
-      setSavedRecipeIds([...savedRecipeIds, recipeToSave.recipeId]);
+      setSavedRecipeIds([...savedRecipeIds, recipeId]);
     } catch (err) {
       console.error(err);
     }
@@ -82,6 +84,7 @@ const SearchRecipes = () => {
       <Jumbotron fluid className="text-light bg-dark">
         <Container className="searchLayout">
           <h1>SEARCH FOR RECIPES</h1>
+
           <Form onSubmit={handleFormSubmit}>
             <Form.Row>
               <Col xs={12} md={8}>
@@ -94,6 +97,7 @@ const SearchRecipes = () => {
                   placeholder="Already have an idea?"
                 />
               </Col>
+
               <Col xs={12} md={4}>
                 <Button type="submit" variant="success" size="lg">
                   Search
@@ -105,45 +109,46 @@ const SearchRecipes = () => {
       </Jumbotron>
 
       <Container className="search-body">
-        {/* was generating an empty h2 but keeping incase it's important */}
-        {/* <h2>
-          {searchedRecipes.length
-            ? `Viewing ${searchedRecipes.length} results:`
-            : "Search for a recipe to begin"}
-        </h2> */}
         <CardColumns>
-          {searchedRecipes.map((data) => {
-            return (
-              <Card className="search-card mt-4" key={data.recipeId} border="dark">
-                {data.image ? (
-                  <Card.Img
-                    src={data.image}
-                    alt={`The cover for ${data.title}`}
-                    variant="top"
-                  />
-                ) : null}
-                <Card.Body>
-                  <Card.Title>{data.title}</Card.Title>
-                  <Card.Text>{data.description}</Card.Text>
-                  {Auth.loggedIn() && (
-                    <Button
-                      disabled={savedRecipeIds?.some(
-                        (savedRecipeId) => savedRecipeId === data.recipeId
-                      )}
-                      className="btn-block btn-info"
-                      onClick={() => handleSaveRecipe(data.recipeId)}
-                    >
-                      {savedRecipeIds?.some(
-                        (savedRecipeId) => savedRecipeId === data.recipeId
-                      )
-                        ? "RECIPE SAVED"
-                        : "SAVE RECIPE"}
-                    </Button>
-                  )}
-                </Card.Body>
-              </Card>
-            );
-          })}
+          {searchedRecipes.map((recipe) => (
+            <Card
+              className="search-card mt-4"
+              key={recipe.recipeId}
+              border="dark"
+            >
+              {recipe.image ? (
+                <Card.Img
+                  src={recipe.image}
+                  alt={`The cover for ${recipe.title}`}
+                  variant="top"
+                />
+              ) : null}
+
+              <Card.Body>
+                <Card.Title>{recipe.title}</Card.Title>
+
+                <Card.Text>{recipe.description}</Card.Text>
+
+                {Auth.loggedIn() && (
+                  <Button
+                    disabled={savedRecipeIds.some(
+                      (savedRecipeId) =>
+                        savedRecipeId === Number(recipe.recipeId),
+                    )}
+                    className="btn-block btn-info"
+                    onClick={() => handleSaveRecipe(Number(recipe.recipeId))}
+                  >
+                    {savedRecipeIds.some(
+                      (savedRecipeId) =>
+                        savedRecipeId === Number(recipe.recipeId),
+                    )
+                      ? 'RECIPE SAVED'
+                      : 'SAVE RECIPE'}
+                  </Button>
+                )}
+              </Card.Body>
+            </Card>
+          ))}
         </CardColumns>
       </Container>
     </>

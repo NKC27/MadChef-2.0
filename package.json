@@ -16,16 +16,20 @@
     "concurrently": "^5.1.0"
   },
   "dependencies": {
+    "@apollo/client": "^3.13.9",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.4",
     "apollo-client": "^2.6.10",
+    "dotenv": "^17.4.2",
     "express": "^4.18.1",
     "graphql": "^15.5.2",
     "nodemon": "^2.0.16",
     "react": "^18.1.0",
+    "react-bootstrap": "^1.6.8",
     "react-dom": "^18.1.0",
+    "react-router-dom": "^5.3.4",
     "wipeclean": "^1.1.2"
   }
 }

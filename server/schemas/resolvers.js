@@ -1,15 +1,47 @@
 const { AuthenticationError } = require('apollo-server-express');
 const { User } = require('../models');
 const { signToken } = require('../utils/auth');
+const {
+  findRecipesByIngredients,
+  getRecipeInformation,
+} = require('../utils/spoonacular');
 
 const resolvers = {
   Query: {
     me: async (parent, args, context) => {
       if (context.user) {
-        const userData = await User.findOne({ _id: context.user._id }).select('-__v -password');
+        const userData = await User.findOne({
+          _id: context.user._id,
+        }).select('-__v -password');
+
         return userData;
       }
+
       throw new AuthenticationError('You need to be logged in');
+    },
+
+    findRecipesByIngredients: async (parent, { ingredients }) => {
+      const recipes = await findRecipesByIngredients(ingredients);
+
+      return recipes.map((recipe) => ({
+        recipeId: recipe.id,
+        title: recipe.title,
+        description: '',
+        image: recipe.image || '',
+        link: '',
+      }));
+    },
+
+    getRecipeInformation: async (parent, { recipeId }) => {
+      const recipe = await getRecipeInformation(recipeId);
+
+      return {
+        recipeId: recipe.id,
+        title: recipe.title,
+        description: recipe.summary || '',
+        image: recipe.image || '',
+        link: recipe.sourceUrl || '',
+      };
     },
   },
 
@@ -17,8 +49,10 @@ const resolvers = {
     addUser: async (parent, args) => {
       const user = await User.create(args);
       const token = signToken(user);
+
       return { token, user };
     },
+
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
 
@@ -36,26 +70,32 @@ const resolvers = {
 
       return { token, user };
     },
+
     saveRecipe: async (parent, { newRecipe }, context) => {
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $push: { SavedRecipes: newRecipe }},
-          { new: true }
+          { $push: { SavedRecipes: newRecipe } },
+          { new: true },
         );
+
         return updatedUser;
       }
+
       throw new AuthenticationError('You need to be logged in');
     },
+
     removeRecipe: async (parent, { recipeId }, context) => {
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $pull: { SavedRecipes: { recipeId }}},
-          { new: true }
+          { $pull: { SavedRecipes: { recipeId } } },
+          { new: true },
         );
+
         return updatedUser;
       }
+
       throw new AuthenticationError('You need to be logged in');
     },
   },

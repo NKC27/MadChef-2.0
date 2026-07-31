@@ -1,124 +1,86 @@
-import React, { useState } from "react";
-import ReactDOM from "react-dom";
+import React, { useState } from 'react';
+import { Container, Button, Card, CardColumns, Modal } from 'react-bootstrap';
+import { useLazyQuery } from '@apollo/client';
+
+import './RecipeBuilder.scss';
+
+import checkList from '../../utils/checkList.json';
 import {
-  Jumbotron,
-  Container,
-  Col,
-  Form,
-  Button,
-  Card,
-  CardColumns,
-  Modal,
-} from "react-bootstrap";
+  FIND_RECIPES_BY_INGREDIENTS,
+  GET_RECIPE_INFORMATION,
+} from '../../utils/queries';
 
-import "./RecipeBuilder.scss";
-
-import checkList from "../../utils/checkList.json";
-
-function App() {
-  // State with list of all checked item
+function RecipeBuilder() {
   const [checked, setChecked] = useState([]);
-  const [searchedRecipes, setSearchedRecipes] = useState([]);
   const [show, setShow] = useState(false);
-  const [searchById, setSearchById] = useState([]);
-  const handleClose = () => setShow(false);
-  // const checkList = [
-  //   "Milk",
-  //   "Peppers",
-  //   "Beans",
-  //   "Tinned Tomatoes",
-  //   "Cheese",
-  //   "Cream",
-  //   "Chicken",
-  //   "Beef",
-  //   "Eggs",
-  //   "Quorn",
-  //   "Bread",
-  //   "Bacon",
-  //   "Butter",
-  //   "Ham",
-  //   "Tofu",
-  //   "Halloumi",
-  //   "Steak",
-  //   "Pasta",
-  // ];
-  // Add/Remove checked item from list
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+
+  const [findRecipes, { data }] = useLazyQuery(FIND_RECIPES_BY_INGREDIENTS);
+
+  const [getRecipeInformation] = useLazyQuery(GET_RECIPE_INFORMATION);
+
+  const searchedRecipes = data?.findRecipesByIngredients || [];
+
+  const handleClose = () => {
+    setShow(false);
+    setSelectedRecipe(null);
+  };
+
   const handleCheck = async (event) => {
-    var updatedList = [...checked];
+    const ingredient = event.target.value;
+
+    let updatedList;
+
     if (event.target.checked) {
-      updatedList = [...checked, event.target.value];
-      try {
-        const response = await fetch(
-          `https://api.spoonacular.com/recipes/findByIngredients?apiKey=b622f7d1fa414549a865f90abc479acf&ingredients=${updatedList}&number=9`
-        );
-        if (!response.ok) {
-          throw new Error("Something went wrong!");
-        }
-
-        const meals = await response.json();
-
-        const recipeData = meals.map((data) => ({
-          recipeId: data.id,
-          title: data.title,
-          description: "",
-          image: data.image || "",
-        }));
-        setSearchedRecipes(recipeData);
-      } catch (err) {
-        console.error(err);
-      }
+      updatedList = [...checked, ingredient];
     } else {
-      updatedList.splice(checked.indexOf(event.target.value), 1);
+      updatedList = checked.filter((item) => item !== ingredient);
     }
+
     setChecked(updatedList);
-  };
 
-  const showDetails = async (event) => {
-    setShow(true);
+    if (updatedList.length === 0) {
+      return;
+    }
+
     try {
-      const response = await fetch(
-        `https://api.spoonacular.com/recipes/${event.currentTarget.id}/information?apiKey=b622f7d1fa414549a865f90abc479acf&includeNutrition=false`
-      );
-
-      if (!response.ok) {
-        throw new Error("Something went wrong!");
-      }
-
-      const meal = await response.json();
-
-      const recipeIdData = {
-        description: meal.summary,
-        image: meal.image || "",
-      };
-      console.log(JSON.stringify(recipeIdData));
-      setSearchById(recipeIdData);
+      await findRecipes({
+        variables: {
+          ingredients: updatedList,
+        },
+      });
     } catch (err) {
-      console.error(err);
+      console.error('Recipe search failed:', err);
     }
   };
 
-  // Generate string of checked items
-  const checkedItems = checked.length
-    ? checked.reduce((total, item) => {
-        return total + "+" + item;
-      })
-    : "";
-  // Return classes based on whether item is checked
-  var isChecked = (item) =>
-    checked.includes(item) ? "checked-item" : "not-checked-item";
+  const showDetails = async (recipeId) => {
+    try {
+      const { data: recipeData } = await getRecipeInformation({
+        variables: {
+          recipeId: String(recipeId),
+        },
+      });
+
+      setSelectedRecipe(recipeData?.getRecipeInformation || null);
+      setShow(true);
+    } catch (err) {
+      console.error('Unable to load recipe details:', err);
+    }
+  };
+
+  const isChecked = (item) =>
+    checked.includes(item) ? 'checked-item' : 'not-checked-item';
+
   return (
-
-
-
-
-    
     <div className="app">
       <div className="imgReset">
         <img
           className="recipeSplashScreen"
-          // src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
           src="images/custom-splash.png"
+          alt="Recipe builder"
         />
+
         <div className="centered">
           <div className="slogan">
             <span className="sloganText1">
@@ -127,88 +89,105 @@ function App() {
           </div>
         </div>
       </div>
-      {/* HERE */}
+
       <div className="title">Ingredients to build with:</div>
-        <div className="list-container">
-          {checkList.map((item, index) => (
-            <div className="check-list" key={index}>
-              <input value={item.item} type="checkbox" onChange={handleCheck} />
-              <span className={isChecked(item.item)}>
-                <img
-                  className="ingredients"
-                  src={process.env.PUBLIC_URL + item.image}
-                ></img>
-              </span>
-            </div>
-          ))}
-        </div>
+
+      <div className="list-container">
+        {checkList.map((item, index) => (
+          <div className="check-list" key={index}>
+            <input
+              value={item.item}
+              type="checkbox"
+              checked={checked.includes(item.item)}
+              onChange={handleCheck}
+            />
+
+            <span className={isChecked(item.item)}>
+              <img
+                className="ingredients"
+                src={process.env.PUBLIC_URL + item.image}
+                alt={item.item}
+              />
+            </span>
+          </div>
+        ))}
+      </div>
+
       <div className="checkList">
-        <div>
         <h2 className="results">
-              {searchedRecipes.length
-                ? `Viewing ${searchedRecipes.length} results:`
-                : "Click your ingredients to generate a recipe!"}
-            </h2>
-          <Container>
-            {/* <h2 className="results">
-              {searchedRecipes.length
-                ? `Viewing ${searchedRecipes.length} results:`
-                : "Search for a recipe to begin"}
-            </h2> */}
-            <CardColumns>
-              {searchedRecipes.map((data) => {
-                return (
-                  <Card className="recipe-card" key={data.recipeId} style={{ width: "18rem" }}>
-                    <Card.Img variant="top" src={data.image} />
-                    <Card.Body>
-                      <Card.Title className="font-family: 'Anton';">
-                        {data.title}
-                      </Card.Title>
-                      <Button
-                      className="see-more-btn"
-                        variant="dark"
-                        id={data.recipeId}
-                        onClick={showDetails}
-                      >
-                        See More
-                      </Button>
-                      <Modal show={show} onHide={handleClose}>
-                        <Modal.Body>
-                          <span
-                            dangerouslySetInnerHTML={{
-                              __html: searchById.description,
-                            }}
-                          ></span>
-                        </Modal.Body>
-                        <Modal.Footer>
-                          <Button variant="secondary" onClick={handleClose}>
-                            Close
-                          </Button>
-                        </Modal.Footer>
-                      </Modal>
-                    </Card.Body>
-                  </Card>
-                );
-              })}
-            </CardColumns>
-          </Container>
-        </div>
-        {/* <div className="title">Your CheckList:</div>
-        <div className="list-container">
-          {checkList.map((item, index) => (
-            <div className="check-list" key={index}>
-              <input value={item.item} type="checkbox" onChange={handleCheck} />
-              <span className={isChecked(item.item)}>
-                <img
-                  className="ingredients"
-                  src={process.env.PUBLIC_URL + item.image}
-                ></img>
-              </span>
-            </div>
-          ))}
-        </div> */}
+          {searchedRecipes.length
+            ? `Viewing ${searchedRecipes.length} results:`
+            : 'Click your ingredients to generate a recipe!'}
+        </h2>
+
+        <Container>
+          <CardColumns>
+            {searchedRecipes.map((recipe) => (
+              <Card
+                className="recipe-card"
+                key={recipe.recipeId}
+                style={{ width: '18rem' }}
+              >
+                {recipe.image && (
+                  <Card.Img
+                    variant="top"
+                    src={recipe.image}
+                    alt={recipe.title}
+                  />
+                )}
+
+                <Card.Body>
+                  <Card.Title>{recipe.title}</Card.Title>
+
+                  <Button
+                    className="see-more-btn"
+                    variant="dark"
+                    onClick={() => showDetails(recipe.recipeId)}
+                  >
+                    See More
+                  </Button>
+                </Card.Body>
+              </Card>
+            ))}
+          </CardColumns>
+        </Container>
+
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>
+              {selectedRecipe?.title || 'Recipe Details'}
+            </Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>
+            {selectedRecipe?.image && (
+              <img
+                src={selectedRecipe.image}
+                alt={selectedRecipe.title}
+                className="img-fluid mb-3"
+              />
+            )}
+
+            {selectedRecipe?.description ? (
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: selectedRecipe.description,
+                }}
+              />
+            ) : (
+              <p>No recipe description available.</p>
+            )}
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     </div>
   );
 }
-export default App;
+
+export default RecipeBuilder;
