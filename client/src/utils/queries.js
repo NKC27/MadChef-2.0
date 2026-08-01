@@ -7,7 +7,7 @@ export const GET_ME = gql`
       username
       email
       recipeCount
-      SavedRecipes {
+      savedRecipes {
         recipeId
         description
         title
@@ -38,6 +38,14 @@ export const GET_RECIPE_INFORMATION = gql`
       description
       image
       link
+      readyInMinutes
+      servings
+      instructions
+      ingredients {
+        name
+        amount
+        unit
+      }
     }
   }
 `;

@@ -41,6 +41,21 @@ const resolvers = {
         description: recipe.summary || '',
         image: recipe.image || '',
         link: recipe.sourceUrl || '',
+
+        readyInMinutes: recipe.readyInMinutes || 0,
+        servings: recipe.servings || 0,
+
+        instructions:
+          recipe.analyzedInstructions?.[0]?.steps
+            ?.map((step) => `${step.number}. ${step.step}`)
+            .join('\n') || '',
+
+        ingredients:
+          recipe.extendedIngredients?.map((ingredient) => ({
+            name: ingredient.name,
+            amount: ingredient.amount,
+            unit: ingredient.unit,
+          })) || [],
       };
     },
   },
@@ -99,6 +114,6 @@ const resolvers = {
       throw new AuthenticationError('You need to be logged in');
     },
   },
-};
+}; //
 
 module.exports = resolvers;

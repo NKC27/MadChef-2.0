@@ -6,11 +6,11 @@ const typeDefs = gql`
     username: String!
     email: String!
     recipeCount: Int
-    SavedRecipes: [Recipe]
+    savedRecipes: [Recipe]
   }
 
   type Auth {
-    token: ID!
+    token: String!
     user: User
   }
 
@@ -22,16 +22,26 @@ const typeDefs = gql`
     link: String
   }
 
+  type Ingredient {
+    name: String
+    amount: Float
+    unit: String
+  }
+
   type SpoonacularRecipe {
     recipeId: ID!
     title: String!
     description: String
     image: String
     link: String
+    readyInMinutes: Int
+    servings: Int
+    instructions: String
+    ingredients: [Ingredient]
   }
 
-  input inputRecipe {
-    recipeId: Int
+  input RecipeInput {
+    recipeId: ID!
     title: String
     description: String
     image: String
@@ -47,7 +57,7 @@ const typeDefs = gql`
   type Mutation {
     login(email: String!, password: String!): Auth
     addUser(username: String!, email: String!, password: String!): Auth
-    saveRecipe(newRecipe: inputRecipe!): User
+    saveRecipe(newRecipe: RecipeInput!): User
     removeRecipe(recipeId: ID!): User
   }
 `;
