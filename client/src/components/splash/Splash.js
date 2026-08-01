@@ -1,6 +1,6 @@
-import React from "react";
-import "./splash.scss";
-import { InputGroup, Button } from "react-bootstrap";
+import React from 'react';
+import './splash.scss';
+import { InputGroup, Button } from 'react-bootstrap';
 // import { Link } from "react-dom";
 
 function Splash() {
@@ -13,7 +13,7 @@ function Splash() {
     //   <h1>Welcome to MadChef!</h1>
     //   <h2>SEE YOUR FOOD</h2>
 
-    <div class="jumbotron">
+    <div className="jumbotron">
       <h1 className="slogan">FEELING CREATIVE?</h1>
       <h2 className="sloganBelow">TIME TO COMBINE MAD INGREDIENTS</h2>
       <div className="button-input">
