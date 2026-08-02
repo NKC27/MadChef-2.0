@@ -1,21 +1,22 @@
-import React from "react";
+import React from 'react';
 import {
   Jumbotron,
   Container,
   CardColumns,
   Card,
   Button,
-} from "react-bootstrap";
-import Auth from "../utils/auth";
-import { removeRecipeId } from "../utils/localStorage";
-import { useQuery, useMutation } from "@apollo/client";
-import { GET_ME } from "../utils/queries";
-import { REMOVE_RECIPE } from "../utils/mutations";
+} from 'react-bootstrap';
+import Auth from '../utils/auth';
+import { removeRecipeId } from '../utils/localStorage';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_ME } from '../utils/queries';
+import { REMOVE_RECIPE } from '../utils/mutations';
 
 const SavedRecipes = () => {
   const { loading, data } = useQuery(GET_ME);
-  const [removeRecipe, { error }] = useMutation(REMOVE_RECIPE);
-  const userData = data?.me || {};
+  const [removeRecipe] = useMutation(REMOVE_RECIPE);
+
+  const userData = data?.me || { savedRecipes: [] };
 
   const handleDeleteRecipe = async (recipeId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -25,7 +26,7 @@ const SavedRecipes = () => {
     }
 
     try {
-      const { data } = await removeRecipe({
+      await removeRecipe({
         variables: { recipeId },
       });
 
@@ -36,7 +37,7 @@ const SavedRecipes = () => {
   };
 
   if (loading) {
-    return <h2>Loading</h2>;
+    return <h2>Loading...</h2>;
   }
 
   return (
@@ -46,38 +47,41 @@ const SavedRecipes = () => {
           <h1>SAVED RECIPES</h1>
         </Container>
       </Jumbotron>
+
       <Container>
         <h2>
-          {userData.SavedRecipes.length
-            ? `Viewing ${userData.SavedRecipes.length} saved ${
-                userData.SavedRecipes.length === 1 ? "recipe" : "recipes"
+          {userData.savedRecipes.length
+            ? `Viewing ${userData.savedRecipes.length} saved ${
+                userData.savedRecipes.length === 1 ? 'recipe' : 'recipes'
               }:`
-            : "You have no saved recipes"}
+            : 'You have no saved recipes'}
         </h2>
+
         <CardColumns>
-          {userData.SavedRecipes.map((data) => {
-            return (
-              <Card className="mt-4" key={data.recipeId} border="dark">
-                {data.image ? (
-                  <Card.Img
-                    src={data.image}
-                    alt={`The picture for ${data.title}`}
-                    variant="top"
-                  />
-                ) : null}
-                <Card.Body>
-                  <Card.Title>{data.title}</Card.Title>
-                  <Card.Text>{data.description}</Card.Text>
-                  <Button
-                    className="btn-block btn-danger"
-                    onClick={() => handleDeleteRecipe(data.recipeId)}
-                  >
-                    Delete
-                  </Button>
-                </Card.Body>
-              </Card>
-            );
-          })}
+          {userData.savedRecipes.map((recipe) => (
+            <Card className="mt-4" key={recipe.recipeId} border="dark">
+              {recipe.image ? (
+                <Card.Img
+                  src={recipe.image}
+                  alt={`The picture for ${recipe.title}`}
+                  variant="top"
+                />
+              ) : null}
+
+              <Card.Body>
+                <Card.Title>{recipe.title}</Card.Title>
+
+                <Card.Text>{recipe.description}</Card.Text>
+
+                <Button
+                  className="btn-block btn-danger"
+                  onClick={() => handleDeleteRecipe(recipe.recipeId)}
+                >
+                  Delete
+                </Button>
+              </Card.Body>
+            </Card>
+          ))}
         </CardColumns>
       </Container>
     </>

@@ -1,0 +1,13 @@
+@import './variables.scss';
+@import './typography.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: $mc-cream;
+  color: $mc-text;
+}

@@ -1,13 +1,24 @@
-$primary-orange: #ff6b35;
+// MadChef 3.0 Design Tokens
 
-$dark: #151515;
+// Colours
+$mc-orange: #ff6b35;
+$mc-dark: #151515;
+$mc-cream: #fff8ef;
+$mc-green: #6bbf59;
+$mc-white: #ffffff;
+$mc-text: #222222;
 
-$cream: #fff8ef;
+// Borders
+$radius-sm: 8px;
+$radius-md: 14px;
+$radius-lg: 24px;
 
-$green: #6bbf59;
-
-$text-dark: #222;
-
-$radius-lg: 18px;
-
+// Shadows
 $shadow-card: 0 10px 30px rgba(0, 0, 0, 0.12);
+
+// Spacing
+$space-xs: 8px;
+$space-sm: 16px;
+$space-md: 24px;
+$space-lg: 40px;
+$space-xl: 64px;

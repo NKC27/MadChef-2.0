@@ -1,8 +1,15 @@
-.heading {
+// MadChef Typography
+
+.mc-heading {
   font-family: 'Anton', sans-serif;
   letter-spacing: 1px;
 }
 
-.body {
-  font-family: 'Inter', sans-serif;
+.mc-body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.mc-small {
+  font-size: 0.85rem;
 }
