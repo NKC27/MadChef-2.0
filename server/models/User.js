@@ -2,7 +2,8 @@ const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
 const recipeSchema = require('./Recipe');
 
-const userSchema = new Schema({
+const userSchema = new Schema(
+  {
     username: {
       type: String,
       required: true,
@@ -18,13 +19,13 @@ const userSchema = new Schema({
       type: String,
       required: true,
     },
-    SavedRecipes: [recipeSchema],
+    savedRecipes: [recipeSchema],
   },
   {
     toJSON: {
       virtuals: true,
     },
-  }
+  },
 );
 
 userSchema.pre('save', async function (next) {
@@ -41,7 +42,7 @@ userSchema.methods.isCorrectPassword = async function (password) {
 };
 
 userSchema.virtual('recipeCount').get(function () {
-  return this.SavedRecipes.length;
+  return this.savedRecipes.length;
 });
 
 const User = model('User', userSchema);

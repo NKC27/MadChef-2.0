@@ -17,6 +17,7 @@ const SavedRecipes = () => {
   const [removeRecipe] = useMutation(REMOVE_RECIPE);
 
   const userData = data?.me || { savedRecipes: [] };
+  console.log('User Data:', userData);
 
   const handleDeleteRecipe = async (recipeId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;

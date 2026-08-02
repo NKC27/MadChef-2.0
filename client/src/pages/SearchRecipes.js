@@ -9,11 +9,14 @@ import {
   Card,
   CardColumns,
 } from 'react-bootstrap';
+
 import Auth from '../utils/auth';
 import { saveRecipeIds, getSavedRecipesIds } from '../utils/localStorage';
+
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { FIND_RECIPES_BY_INGREDIENTS } from '../utils/queries';
 import { SAVE_RECIPE } from '../utils/mutations';
+
 import './searchRecipes.scss';
 
 const SearchRecipes = () => {
@@ -46,26 +49,35 @@ const SearchRecipes = () => {
 
       setSearchInput('');
     } catch (err) {
-      console.error(err);
+      console.error('Search failed:', err);
     }
   };
 
   const handleSaveRecipe = async (recipeId) => {
+    console.log('SAVE CLICKED:', recipeId);
+
     const recipeToSave = searchedRecipes.find(
-      (recipe) => recipe.recipeId === recipeId,
+      (recipe) => Number(recipe.recipeId) === Number(recipeId),
     );
+
+    console.log('Recipe found:', recipeToSave);
 
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
+    console.log('Token exists:', !!token);
+
     if (!token || !recipeToSave) {
+      console.log('Missing token or recipe');
       return;
     }
 
     try {
-      await saveRecipe({
+      console.log('Sending mutation...');
+
+      const result = await saveRecipe({
         variables: {
           newRecipe: {
-            recipeId: Number(recipeToSave.recipeId),
+            recipeId: String(recipeToSave.recipeId),
             title: recipeToSave.title,
             description: recipeToSave.description || '',
             image: recipeToSave.image || '',
@@ -74,9 +86,11 @@ const SearchRecipes = () => {
         },
       });
 
-      setSavedRecipeIds([...savedRecipeIds, recipeId]);
+      console.log('Mutation result:', result);
+
+      setSavedRecipeIds([...savedRecipeIds, Number(recipeId)]);
     } catch (err) {
-      console.error(err);
+      console.error('Save mutation failed:', err);
     }
   };
 
@@ -129,6 +143,7 @@ const SearchRecipes = () => {
                 <Card.Title>{recipe.title}</Card.Title>
 
                 <Card.Text>{recipe.description}</Card.Text>
+
                 <Link
                   to={`/recipe/${recipe.recipeId}`}
                   className="btn btn-primary btn-block mb-2"

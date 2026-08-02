@@ -87,10 +87,11 @@ const resolvers = {
     },
 
     saveRecipe: async (parent, { newRecipe }, context) => {
+      console.log('AUTH CONTEXT:', context);
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $push: { SavedRecipes: newRecipe } },
+          { $push: { savedRecipes: newRecipe } },
           { new: true },
         );
 
@@ -104,7 +105,7 @@ const resolvers = {
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $pull: { SavedRecipes: { recipeId } } },
+          { $pull: { savedRecipes: { recipeId } } },
           { new: true },
         );
 
