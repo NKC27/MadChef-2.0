@@ -45,10 +45,12 @@ function App() {
             <Route exact path="/search" component={SearchRecipes} />
             <Route exact path="/saved" component={SavedRecipes} />
             <Route exact path="/RecipeBuilder" component={RecipeBuilder} />
+
+            <Route exact path="/recipe/:recipeId" component={RecipeDetails} />
+
             <Route
               render={() => <h1 className="display-2">Incorrect page</h1>}
             />
-            <Route exact path="/recipe/:recipeId" component={RecipeDetails} />;
           </Switch>
         </>
       </Router>

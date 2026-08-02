@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import {
   Jumbotron,
@@ -128,6 +129,12 @@ const SearchRecipes = () => {
                 <Card.Title>{recipe.title}</Card.Title>
 
                 <Card.Text>{recipe.description}</Card.Text>
+                <Link
+                  to={`/recipe/${recipe.recipeId}`}
+                  className="btn btn-primary btn-block mb-2"
+                >
+                  SEE MORE
+                </Link>
 
                 {Auth.loggedIn() && (
                   <Button
