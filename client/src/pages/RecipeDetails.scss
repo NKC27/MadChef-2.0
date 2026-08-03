@@ -1,0 +1,62 @@
+.recipe-details {
+  color: #212529 !important;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  p,
+  li {
+    color: #212529 !important;
+  }
+
+  .recipe-subtitle {
+    color: #6c757d !important;
+  }
+
+  .info-card {
+    background: #f8f9fa !important;
+    color: #212529 !important;
+
+    h4 {
+      color: #212529 !important;
+    }
+
+    h2 {
+      color: #198754 !important;
+    }
+
+    p {
+      color: #212529 !important;
+    }
+  }
+
+  .ingredient-card {
+    background: white !important;
+
+    strong {
+      color: #198754 !important;
+    }
+
+    .card-body {
+      color: #212529 !important;
+    }
+  }
+
+  .instruction-card {
+    background: white !important;
+
+    h5 {
+      color: #198754 !important;
+    }
+
+    p {
+      color: #212529 !important;
+    }
+  }
+
+  .section-title {
+    color: #212529 !important;
+  }
+}

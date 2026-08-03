@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Jumbotron,
   Container,
@@ -6,8 +7,10 @@ import {
   Card,
   Button,
 } from 'react-bootstrap';
+
 import Auth from '../utils/auth';
 import { removeRecipeId } from '../utils/localStorage';
+
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
 import { REMOVE_RECIPE } from '../utils/mutations';
@@ -17,6 +20,7 @@ const SavedRecipes = () => {
   const [removeRecipe] = useMutation(REMOVE_RECIPE);
 
   const userData = data?.me || { savedRecipes: [] };
+
   console.log('User Data:', userData);
 
   const handleDeleteRecipe = async (recipeId) => {
@@ -33,7 +37,7 @@ const SavedRecipes = () => {
 
       removeRecipeId(recipeId);
     } catch (err) {
-      console.error(err);
+      console.error('Delete failed:', err);
     }
   };
 
@@ -43,12 +47,14 @@ const SavedRecipes = () => {
 
   return (
     <>
+      {' '}
       <Jumbotron fluid className="text-light bg-dark">
+        {' '}
         <Container>
-          <h1>SAVED RECIPES</h1>
-        </Container>
+          {' '}
+          <h1>SAVED RECIPES</h1>{' '}
+        </Container>{' '}
       </Jumbotron>
-
       <Container>
         <h2>
           {userData.savedRecipes.length
@@ -74,11 +80,18 @@ const SavedRecipes = () => {
 
                 <Card.Text>{recipe.description}</Card.Text>
 
+                <Link
+                  to={`/recipe/${recipe.recipeId}`}
+                  className="btn btn-primary btn-block mb-2"
+                >
+                  SEE RECIPE
+                </Link>
+
                 <Button
                   className="btn-block btn-danger"
                   onClick={() => handleDeleteRecipe(recipe.recipeId)}
                 >
-                  Delete
+                  DELETE
                 </Button>
               </Card.Body>
             </Card>

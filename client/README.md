@@ -159,8 +159,10 @@ type SpoonacularRecipe {
   instructions: String
   ingredients: [Ingredient]
 }
+```
 
 ## React Router Recipe Details Bug
+
 Issue
 
 Clicking "See More" changed the URL correctly:
@@ -179,7 +181,7 @@ React Router v5 evaluates routes from top to bottom inside <Switch>.
 The catch-all route:
 
 <Route
-  render={() => <h1>Incorrect page</h1>}
+render={() => <h1>Incorrect page</h1>}
 />
 
 was matching before:
@@ -214,9 +216,9 @@ Apollo Client connection
 Test query returned:
 
 {
-  "title": "Pasta with Garlic, Scallions, Cauliflower & Breadcrumbs",
-  "image": "https://img.spoonacular.com/recipes/716429-556x370.jpg",
-  "readyInMinutes": 45
+"title": "Pasta with Garlic, Scallions, Cauliflower & Breadcrumbs",
+"image": "https://img.spoonacular.com/recipes/716429-556x370.jpg",
+"readyInMinutes": 45
 }
 Result
 
@@ -290,4 +292,22 @@ Recipe categories
 Improved mobile experience
 React 18 migration
 Performance optimisation
+
+```
+## Bug Fix: Saved Recipes Not Displaying
+
+Issue:
+Recipes successfully saved to MongoDB but SavedRecipes page returned empty data.
+
+Cause:
+Legacy user documents contained incorrect SavedRecipes field casing and invalid array entries.
+
+Resolution:
+- Removed duplicate SavedRecipes field
+- Verified MongoDB schema matched GraphQL schema
+- Tested with clean user account
+- Added navigation from saved recipes to recipe details
+
+Result:
+Saved recipes now persist and display correctly.
 ```

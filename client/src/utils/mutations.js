@@ -43,7 +43,7 @@ export const ADD_USER = gql`
 `;
 
 export const SAVE_RECIPE = gql`
-  mutation saveRecipe($newRecipe: inputRecipe!) {
+  mutation saveRecipe($newRecipe: RecipeInput!) {
     saveRecipe(newRecipe: $newRecipe) {
       _id
       username
