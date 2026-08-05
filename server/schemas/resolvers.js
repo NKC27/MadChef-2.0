@@ -87,13 +87,24 @@ const resolvers = {
     },
 
     saveRecipe: async (parent, { newRecipe }, context) => {
-      console.log('AUTH CONTEXT:', context);
+      console.log('========== SAVE RECIPE ==========');
+      console.log('Context user:', context.user);
+      console.log('Recipe received:', newRecipe);
+
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
-          { _id: context.user._id },
-          { $push: { savedRecipes: newRecipe } },
-          { new: true },
+          context.user._id,
+          {
+            $push: {
+              savedRecipes: newRecipe,
+            },
+          },
+          {
+            new: true,
+          },
         );
+
+        console.log('Updated user:', updatedUser);
 
         return updatedUser;
       }

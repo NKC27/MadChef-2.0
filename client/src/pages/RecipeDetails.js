@@ -1,23 +1,15 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import {
-  Container,
-  Card,
-  Spinner,
-  Button,
-  Row,
-  Col,
-  Badge,
-} from 'react-bootstrap';
+import { Container, Card, Spinner, Button, Row, Col } from 'react-bootstrap';
 
 import { GET_RECIPE_INFORMATION } from '../utils/queries';
 import './RecipeDetails.scss';
 
-console.log('RecipeDetails SCSS loaded');
-
 const RecipeDetails = () => {
   const { recipeId } = useParams();
+  const pageRef = useRef(null);
 
   const { loading, error, data } = useQuery(GET_RECIPE_INFORMATION, {
     variables: {
@@ -25,9 +17,63 @@ const RecipeDetails = () => {
     },
   });
 
+  const recipe =
+    data?.recipe || data?.recipeInformation || data?.getRecipeInformation;
+
+  useEffect(() => {
+    if (!recipe) return;
+
+    const ctx = gsap.context(() => {
+      gsap.set(
+        ['.recipe-hero', '.stat-card', '.ingredient-card', '.instruction-card'],
+        {
+          opacity: 1,
+          x: 0,
+          y: 0,
+        },
+      );
+
+      gsap.from('.recipe-hero', {
+        opacity: 0,
+        y: -40,
+        duration: 1,
+        ease: 'power3.out',
+      });
+
+      gsap.from('.stat-card', {
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        stagger: 0.2,
+        delay: 0.2,
+        ease: 'power3.out',
+      });
+
+      gsap.from('.ingredient-card', {
+        opacity: 0,
+        x: -20,
+        duration: 0.5,
+        stagger: 0.1,
+        delay: 0.4,
+        ease: 'power2.out',
+      });
+
+      gsap.from('.instruction-card', {
+        opacity: 0,
+        x: 20,
+        duration: 0.5,
+        stagger: 0.1,
+        delay: 0.6,
+        ease: 'power2.out',
+      });
+    }, pageRef);
+
+    return () => ctx.revert();
+  }, [recipe]);
+
   if (loading) {
     return (
-      <Container className="text-center mt-5">
+      <Container className="recipe-loading text-center mt-5">
         <Spinner animation="border" />
         <h3 className="mt-3">Cooking up your recipe...</h3>
       </Container>
@@ -44,8 +90,6 @@ const RecipeDetails = () => {
     );
   }
 
-  const recipe = data?.getRecipeInformation;
-
   if (!recipe) {
     return (
       <Container className="mt-5">
@@ -54,92 +98,107 @@ const RecipeDetails = () => {
     );
   }
 
-  const steps = recipe.instructions ? recipe.instructions.split('\n') : [];
+  const ingredients = recipe.ingredients || [];
+
+  const steps = recipe.instructions
+    ? recipe.instructions.split('\n').filter((step) => step.trim() !== '')
+    : [];
 
   return (
-    <Container className="mt-5 mb-5 recipe-details">
-      <Card className="shadow-lg border-0 overflow-hidden">
-        {recipe.image && (
-          <Card.Img
-            variant="top"
-            src={recipe.image}
-            alt={recipe.title}
-            style={{
-              height: '420px',
-              objectFit: 'cover',
-            }}
-          />
-        )}
+    <Container ref={pageRef} className="recipe-details-page mt-5 mb-5">
+      <Card className="recipe-card shadow-lg border-0">
+        {/* HERO */}
 
-        <div className="p-4 text-center">
-          <h1 className="display-4 fw-bold">{recipe.title}</h1>
+        <div className="recipe-hero">
+          <Card.Img src={recipe.image} alt={recipe.title} />
 
-          <p className="text-muted">A delicious recipe ready to cook</p>
+          <div className="hero-overlay">
+            <h1>{recipe.title}</h1>
+
+            <p>Fresh from the MadChef kitchen 🍳</p>
+          </div>
         </div>
 
-        <Card.Body className="p-4">
-          <Row className="mb-5">
+        <Card.Body>
+          {/* STATS */}
+
+          <Row className="recipe-stats mb-5">
             <Col md={6} className="mb-3">
-              <Card className="shadow-sm border-0 info-card">
-                <Card.Body className="text-center">
-                  <h4>Cooking Time</h4>
+              <div className="stat-card">
+                <div className="stat-icon">⏱️</div>
 
-                  <h2 className="text-success">{recipe.readyInMinutes}</h2>
+                <h5>Cooking Time</h5>
 
-                  <p className="mb-0">minutes</p>
-                </Card.Body>
-              </Card>
+                <h2>
+                  {recipe.readyInMinutes}
+                  <span>mins</span>
+                </h2>
+              </div>
             </Col>
 
             <Col md={6} className="mb-3">
-              <Card className="shadow-sm border-0 info-card">
-                <Card.Body className="text-center">
-                  <h4>Servings</h4>
+              <div className="stat-card">
+                <div className="stat-icon">👨‍👩‍👧‍👦</div>
 
-                  <h2 className="text-primary">{recipe.servings}</h2>
+                <h5>Servings</h5>
 
-                  <p className="mb-0">people</p>
-                </Card.Body>
-              </Card>
+                <h2>
+                  {recipe.servings}
+                  <span>people</span>
+                </h2>
+              </div>
             </Col>
           </Row>
 
-          <hr />
+          {/* INGREDIENTS */}
 
-          <h2 className="section-title">🥘 Ingredients</h2>
+          <section className="ingredients-section">
+            <h2>🥘 Ingredients</h2>
 
-          <Row>
-            {recipe.ingredients.map((ingredient, index) => (
-              <Col md={6} key={index} className="mb-2">
-                <Card className="shadow-sm ingredient-card">
-                  <Card.Body>
-                    <strong>
-                      {ingredient.amount} {ingredient.unit}
-                    </strong>{' '}
-                    {ingredient.name}
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
+            <Row>
+              {ingredients.map((ingredient, index) => (
+                <Col md={6} key={index} className="mb-3">
+                  <div className="ingredient-card">
+                    <span className="ingredient-icon">✓</span>
 
-          <hr className="mt-5" />
+                    <div>
+                      <strong>
+                        {ingredient.amount} {ingredient.unit}
+                      </strong>
 
-          <h2 className="section-title">👨‍🍳 Instructions</h2>
+                      <p>{ingredient.name}</p>
+                    </div>
+                  </div>
+                </Col>
+              ))}
+            </Row>
+          </section>
 
-          <div className="mt-3">
-            {steps.map((step, index) => (
-              <Card key={index} className="mb-3 shadow-sm instruction-card">
-                <Card.Body>
-                  <h5>Step {index + 1}</h5>
+          {/* INSTRUCTIONS */}
 
-                  <p className="mb-0">{step.replace(`${index + 1}.`, '')}</p>
-                </Card.Body>
-              </Card>
-            ))}
-          </div>
+          <section className="instructions-section mt-5">
+            <h2>👨‍🍳 Cooking Instructions</h2>
 
-          <div className="d-flex justify-content-between mt-5">
+            <div className="timeline">
+              {steps.map((step, index) => (
+                <div className="instruction-card" key={index}>
+                  <div className="step-number">
+                    {String(index + 1).padStart(2, '0')}
+                  </div>
+
+                  <div className="step-content">
+                    <h4>Step {index + 1}</h4>
+
+                    <p>{step.replace(`${index + 1}.`, '')}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* BUTTONS */}
+
+          <div className="recipe-actions mt-5">
             <Link to="/saved" className="btn btn-secondary">
               ← Back To Saved Recipes
             </Link>
