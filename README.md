@@ -17,7 +17,7 @@ MadChef turns the ingredients you already have into recipes you can actually coo
 
 📂 **GitHub Repository**
 
-<https://github.com/NKC27/MadChef>
+<https://github.com/NKC27/MadChef-2.0>
 
 ---
 
@@ -203,8 +203,8 @@ You'll need Node 18+ and a MongoDB instance (local or Atlas).
 Clone the repository:
 
 ```bash
-git clone https://github.com/NKC27/MadChef.git
-cd MadChef
+git clone https://github.com/NKC27/MadChef-2.0.git
+cd MadChef-2.0
 npm install
 ```
 
