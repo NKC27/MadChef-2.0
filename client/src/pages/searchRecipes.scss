@@ -1,3 +1,10 @@
+// Bootstrap 5 dropped the old .jumbotron helper, so the search hero
+// needs its own padding/spacing to keep the same look as before.
+.search-hero {
+  padding: 3rem 1rem;
+  margin-bottom: 2rem;
+}
+
 .searchLayout {
   display: flex;
   justify-content: flex;

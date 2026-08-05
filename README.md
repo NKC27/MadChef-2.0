@@ -1,66 +1,121 @@
 # MadChef
 
-Repository link to MadChef
-<br>
-[Madchef](https://github.com/sikandersultan/MadChef)
-<br>
-Link to a deployed heroku example
-<br>
-[Heroku Madchef](https://mad-chef.herokuapp.com/)
+Find a recipe from the ingredients you already have. Search by name, or check
+off what's in your fridge and get matching dishes back — powered by the
+Spoonacular API behind a GraphQL backend.
 
-## Description
+Originally built as a team project ([original repo](https://github.com/sikandersultan/MadChef)).
+This version is a personal portfolio fork with the stack modernized end to end.
 
-At MadChef we believe in the utmost importance of not wasting avaliable ingredients that one might have in their fridge/cupboard, and to use them efficently to make a new dish for dinner! Keeping this in mind, we created a search function where you can list in ingredients you want to use for cooking, and get back a recipe to follow for your chosen ingredients. Additionally, you can also search for many recipes by name, and get a list of dishes you can make at home! 
+## Tech stack
 
-## Usage and Installation
+**Client:** React 18, TypeScript, Vite, React Router v6, Apollo Client,
+React Bootstrap 2 / Bootstrap 5, GSAP, React DnD
 
-You can use the heroku link on the top of this file to access this app. If you choose to run it locally or to have the source code for modifications, you will need to install MongoDB and set it up as this is the database of choice for this application. Without it, the backend/server side will not run. Once you have Mongo installed and set up, start by cloning the repository into your local machine with the following command (it will be ran in the command link applicaation of your choice):
+**Server:** Node/Express, TypeScript, Apollo Server 4, GraphQL, Mongoose 8,
+JWT auth (bcryptjs for password hashing)
+
+### What changed in the modernization
+
+- **Build tooling:** Create React App (react-scripts 3.4, patched to run on
+  modern Node via a legacy OpenSSL flag) → Vite.
+- **Language:** JavaScript → TypeScript across both client and server, with
+  shared domain types for recipes, ingredients, and users.
+- **Routing:** react-router-dom v5 (`Switch`/`component=`) → v6
+  (`Routes`/`element=`).
+- **Backend framework:** `apollo-server-express` v2 (unmaintained) →
+  `@apollo/server` v4 with the Express 4 integration.
+- **UI library:** upgraded React Bootstrap v1 → v2 / Bootstrap 5, replacing
+  the handful of components v2 dropped (`Jumbotron`, `CardColumns`). Swapped
+  `@mui/material` + `@emotion/*` (pulled in only for 4 footer icons) for the
+  much lighter `react-icons`.
+- **Dependency cleanup:** removed dead/unused packages (`apollo-client` v2,
+  `wipeclean`, MUI/Emotion), removed dead code that had a Spoonacular API key
+  hardcoded client-side (superseded by the GraphQL backend, which already
+  proxies Spoonacular server-side so the key is never exposed to the
+  browser).
+- **Password hashing:** `bcrypt` (native binary) → `bcryptjs` (pure JS, no
+  native build step, more portable across environments).
+
+## Project structure
 
 ```
-$ git clone git@github.com:sikandersultan/MadChef.git
+madchef/
+├─ client/          React + TypeScript + Vite app
+│  └─ src/
+│     ├─ components/
+│     ├─ pages/
+│     ├─ utils/      Apollo queries/mutations, auth helper, localStorage helpers
+│     └─ types/       shared TS interfaces
+└─ server/          Express + TypeScript GraphQL API
+   ├─ config/        MongoDB connection
+   ├─ models/        Mongoose schemas (User, Recipe)
+   ├─ schemas/       GraphQL typeDefs + resolvers
+   └─ utils/          auth (JWT) and Spoonacular API client
 ```
 
-Open the application into your IDE of choice and install the required dependencies, and once installation is complete, use the command listed below:
+## Getting started
+
+You'll need Node 18+ and a MongoDB instance (local or Atlas).
+
+```bash
+git clone <this-repo>
+cd madchef
+npm install
+```
+
+Then set up environment variables — copy the example file and fill in real
+values:
+
+```bash
+cp server/.env.example server/.env
+```
 
 ```
-$ npm i
-$ npm run develop
+SPOONACULAR_API_KEY=your_spoonacular_api_key
+JWT_SECRET=replace_with_a_long_random_string
+MONGODB_URI=mongodb://127.0.0.1:27017/madchef
 ```
 
-This should start the react build, spin up the server and open the application on localhost.
+Run both the client and server in development:
+
+```bash
+npm run dev
+```
+
+This starts the Vite dev server (client) and the GraphQL API (server) side
+by side, with the client proxying `/graphql` requests to the server.
+
+Other useful scripts:
+
+```bash
+npm run build       # builds server (tsc) and client (vite build)
+npm run typecheck   # type-checks both workspaces
+npm start           # runs the compiled server (serves the built client too)
+```
 
 ## Screenshots
 
 ### Home screen login
-
 ![image1](./client/src/assets/loginScreen.png)
 
 ### User logged in
-
 ![image2](./client/src/assets/homeScreenUserLoggedIn.png)
 
-### Recpie builder
-
+### Recipe builder
 ![image3](./client/src/assets/recipeBuilder.png)
 
 ### Searched recipes
-
 ![image4](./client/src/assets/searchRecipes.png)
 
 ### Saved recipes
-
 ![image5](./client/src/assets/savedRecipes.png)
 
-## Contact
+## Credits
 
-For questions or comments to anyone of our team members, feel free to contact us.
+Original team: Ryan ([@Ryocon](https://github.com/Ryocon)),
+Nick ([@NKC27](https://github.com/NKC27)),
+Sikander ([@sikandersultan](https://github.com/sikandersultan)).
 
-Email:
-- roconn25@gmail.com (Ryan)
-- n.clarke2785@gmail.com (Nick)
-- sikandersultanmirza@gmail.com (Sikander)
-
-Github:
-- https://github.com/Ryocon
-- https://github.com/NKC27
-- https://github.com/sikandersultan
+Modernization (Vite/TypeScript rewrite, dependency cleanup, backend
+migration) by Nicholas Clarke.
