@@ -1,20 +1,51 @@
-// MadChef 3.0 Design Tokens
+// MadChef — Design Tokens
+// Dark, premium palette. Warm gold accent on near-black surfaces.
 
-// Colours
-$mc-orange: #ff6b35;
-$mc-dark: #151515;
-$mc-cream: #fff8ef;
-$mc-green: #6bbf59;
-$mc-white: #ffffff;
-$mc-text: #222222;
+// Surfaces (darkest to lightest)
+$mc-bg: #0a0a0c;
+$mc-bg-alt: #101013;
+$mc-surface: #17171b;
+$mc-surface-raised: #1e1e23;
+$mc-surface-hover: #26262c;
 
 // Borders
+$mc-border: #26262c;
+$mc-border-soft: rgba(255, 255, 255, 0.08);
+$mc-border-strong: rgba(255, 255, 255, 0.16);
+
+// Text
+$mc-text: #f4f1ea;
+$mc-text-muted: #a8a5ad;
+$mc-text-faint: #6f6c76;
+
+// Accent — warm gold
+$mc-gold: #caa35a;
+$mc-gold-bright: #e2c17d;
+$mc-gold-dim: #8f7440;
+
+// Functional
+$mc-success: #6fbf8b;
+$mc-danger: #e2665c;
+
+// Legacy aliases kept so any leftover references don't hard-break.
+$mc-orange: $mc-gold;
+$mc-dark: $mc-bg;
+$mc-cream: $mc-text;
+$mc-green: $mc-success;
+$mc-white: $mc-text;
+
+// Radius
 $radius-sm: 8px;
 $radius-md: 14px;
 $radius-lg: 24px;
+$radius-full: 999px;
 
-// Shadows
-$shadow-card: 0 10px 30px rgba(0, 0, 0, 0.12);
+// Shadows — dark theme, so lean on depth + a faint gold glow for hero moments
+$shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.45);
+$shadow-md: 0 10px 30px rgba(0, 0, 0, 0.55);
+$shadow-lg: 0 25px 70px rgba(0, 0, 0, 0.65);
+$shadow-card: $shadow-md;
+$shadow-glow: 0 0 60px rgba(202, 163, 90, 0.16);
 
 // Spacing
 $space-xs: 8px;
@@ -22,3 +53,13 @@ $space-sm: 16px;
 $space-md: 24px;
 $space-lg: 40px;
 $space-xl: 64px;
+$space-2xl: 96px;
+
+// Type
+$font-display: 'Fraunces', 'Playfair Display', Georgia, serif;
+$font-body:
+  'Inter',
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  sans-serif;

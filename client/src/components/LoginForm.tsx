@@ -3,6 +3,7 @@ import { Form, Button, Alert } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../utils/mutations';
 import Auth from '../utils/auth';
+import './auth-forms.scss';
 
 interface LoginFormData {
   email: string;
@@ -55,7 +56,12 @@ const LoginForm = () => {
 
   return (
     <>
-      <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
+      <Form
+        noValidate
+        validated={validated}
+        onSubmit={handleFormSubmit}
+        className="auth-form"
+      >
         <Alert
           dismissible
           onClose={() => setAlertDismissed(true)}
@@ -64,7 +70,7 @@ const LoginForm = () => {
         >
           Invalid login info
         </Alert>
-        <Form.Group>
+        <Form.Group className="form-group">
           <Form.Label htmlFor="email">Email</Form.Label>
           <Form.Control
             type="text"
@@ -79,7 +85,7 @@ const LoginForm = () => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group>
+        <Form.Group className="form-group">
           <Form.Label htmlFor="password">Password</Form.Label>
           <Form.Control
             type="password"
@@ -96,9 +102,9 @@ const LoginForm = () => {
         <Button
           disabled={!(userFormData.email && userFormData.password)}
           type="submit"
-          variant="success"
+          variant="primary"
         >
-          Submit
+          Log In
         </Button>
       </Form>
     </>

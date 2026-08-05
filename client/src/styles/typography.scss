@@ -1,15 +1,33 @@
 // MadChef Typography
+@import './variables';
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-display;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
 
 .mc-heading {
-  font-family: 'Anton', sans-serif;
-  letter-spacing: 1px;
+  font-family: $font-display;
+  font-weight: 600;
 }
 
 .mc-body {
-  font-family: Arial, sans-serif;
+  font-family: $font-body;
   line-height: 1.6;
 }
 
 .mc-small {
   font-size: 0.85rem;
+}
+
+.mc-serif-italic {
+  font-family: $font-display;
+  font-style: italic;
+  font-weight: 400;
 }

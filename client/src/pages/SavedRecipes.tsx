@@ -10,9 +10,11 @@ import {
   Modal,
   Spinner,
 } from 'react-bootstrap';
+import { FiClock, FiUsers, FiTrash2, FiBookOpen } from 'react-icons/fi';
 
 import Auth from '../utils/auth';
 import { removeRecipeId } from '../utils/localStorage';
+import { hideBrokenImage } from '../utils/hideBrokenImage';
 
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
@@ -130,7 +132,7 @@ const SavedRecipes = () => {
         <p className="text-muted">
           Your session may have expired. Please log in again.
         </p>
-        <Link to="/" className="btn btn-success">
+        <Link to="/" className="btn btn-primary">
           Back to Home
         </Link>
       </Container>
@@ -141,9 +143,10 @@ const SavedRecipes = () => {
     <div className="saved-recipes-page" ref={pageRef}>
       <section className="saved-hero">
         <Container>
-          <h1>🍳 My Recipe Book</h1>
+          <p className="mc-eyebrow justify-content-center">Your kitchen</p>
+          <h1>My Recipe Book</h1>
 
-          <p>Your favourite MadChef creations</p>
+          <p>Your favourite MadChef creations, all in one place</p>
         </Container>
       </section>
 
@@ -156,12 +159,13 @@ const SavedRecipes = () => {
 
         {userData.savedRecipes.length === 0 ? (
           <div className="empty-state">
-            <h3>👨‍🍳 No recipes yet</h3>
+            <FiBookOpen className="empty-state__icon" aria-hidden="true" />
+            <h3>No recipes yet</h3>
 
             <p>Search for recipes and save your favourites here.</p>
 
-            <Link to="/search" className="btn btn-success">
-              FIND RECIPES
+            <Link to="/search" className="btn btn-primary">
+              Find Recipes
             </Link>
           </div>
         ) : (
@@ -170,7 +174,11 @@ const SavedRecipes = () => {
               <Col md={6} lg={4} key={recipe.recipeId} className="mb-4">
                 <Card className="saved-card">
                   {recipe.image && (
-                    <Card.Img src={recipe.image} alt={recipe.title} />
+                    <Card.Img
+                      src={recipe.image}
+                      alt={recipe.title}
+                      onError={hideBrokenImage}
+                    />
                   )}
 
                   <Card.Body>
@@ -179,11 +187,17 @@ const SavedRecipes = () => {
                     {(recipe.readyInMinutes || recipe.servings) && (
                       <div className="recipe-meta">
                         {recipe.readyInMinutes && (
-                          <span>⏱️ {recipe.readyInMinutes} min</span>
+                          <span>
+                            <FiClock aria-hidden="true" />
+                            {recipe.readyInMinutes} min
+                          </span>
                         )}
 
                         {recipe.servings && (
-                          <span>👨‍👩‍👧 {recipe.servings} servings</span>
+                          <span>
+                            <FiUsers aria-hidden="true" />
+                            {recipe.servings} servings
+                          </span>
                         )}
                       </div>
                     )}
@@ -196,14 +210,14 @@ const SavedRecipes = () => {
 
                     <Link
                       to={`/recipe/${recipe.recipeId}`}
-                      className="btn btn-success w-100 mb-2"
+                      className="btn btn-primary w-100 mb-2"
                     >
-                      VIEW RECIPE 🍳
+                      View Recipe
                     </Link>
 
                     <Button
-                      className="w-100"
-                      variant="danger"
+                      className="w-100 d-flex align-items-center justify-content-center gap-2"
+                      variant="outline-danger"
                       disabled={deletingId === recipe.recipeId}
                       onClick={() => confirmDelete(recipe)}
                     >
@@ -215,10 +229,13 @@ const SavedRecipes = () => {
                             size="sm"
                             className="me-2"
                           />
-                          REMOVING...
+                          Removing…
                         </>
                       ) : (
-                        'REMOVE 🗑️'
+                        <>
+                          <FiTrash2 aria-hidden="true" />
+                          Remove
+                        </>
                       )}
                     </Button>
                   </Card.Body>

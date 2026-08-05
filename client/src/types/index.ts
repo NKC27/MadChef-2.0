@@ -41,8 +41,3 @@ export interface CurrentUser {
   recipeCount: number;
   savedRecipes: SavedRecipe[];
 }
-
-export interface CheckListItem {
-  item: string;
-  image: string;
-}

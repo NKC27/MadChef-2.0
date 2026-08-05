@@ -1,5 +1,5 @@
-@import './variables.scss';
-@import './typography.scss';
+@import './variables';
+@import './typography';
 
 * {
   margin: 0;
@@ -7,7 +7,72 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: $mc-cream;
+  background: $mc-bg;
   color: $mc-text;
+  font-family: $font-body;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba($mc-gold, 0.35);
+  color: $mc-text;
+}
+
+a {
+  transition: color 0.15s ease;
+}
+
+// Thin gold-tinted scrollbar — a small detail that reads as intentional.
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: $mc-bg;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $mc-surface-hover;
+  border-radius: $radius-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: $mc-gold-dim;
+}
+
+// Shared building blocks used across pages so section rhythm stays consistent.
+
+.mc-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: $font-body;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $mc-gold-bright;
+
+  &::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: $mc-gold;
+  }
+}
+
+.mc-section {
+  padding: $space-2xl 0;
+}
+
+.mc-card {
+  background: $mc-surface;
+  border: 1px solid $mc-border-soft;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
 }

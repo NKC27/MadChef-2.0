@@ -15,39 +15,37 @@ const AppNavbar = () => {
         bg="dark"
         variant="dark"
         expand="lg"
-        style={{ marginBottom: '0px', paddingLeft: '10px' }}
         className="collapseOnSelect nav-bar"
       >
         <Container fluid>
           <Navbar.Brand id="madchef-title" as={Link} to="/">
-            <img
-              className="madchef-logo"
-              src="/images/madchef.png"
-              alt="MadChef logo"
-            />
+            <span className="brand-wordmark">
+              <span className="brand-wordmark__mad">Mad</span>
+              <span className="brand-wordmark__chef">Chef</span>
+            </span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbar" />
           <Navbar.Collapse id="navbar">
-            <Nav
-              className="ms-auto"
-              style={{ marginBottom: '0px', paddingTop: '4px' }}
-            >
+            <Nav className="ms-auto">
               <Nav.Link as={Link} to="/RecipeBuilder">
-                BUILD A RECIPE
+                Build a Recipe
               </Nav.Link>
               <Nav.Link as={Link} to="/search">
-                SEARCH FOR RECIPES
+                Search Recipes
               </Nav.Link>
               {Auth.loggedIn() ? (
                 <>
                   <Nav.Link as={Link} to="/saved">
-                    SEE YOUR SAVED RECIPES
+                    Saved Recipes
                   </Nav.Link>
-                  <Nav.Link onClick={() => Auth.logout()}>LOGOUT</Nav.Link>
+                  <Nav.Link onClick={() => Auth.logout()}>Log Out</Nav.Link>
                 </>
               ) : (
-                <Nav.Link onClick={() => setShowModal(true)}>
-                  LOGIN/SIGN UP
+                <Nav.Link
+                  className="nav-link--cta"
+                  onClick={() => setShowModal(true)}
+                >
+                  Log In / Sign Up
                 </Nav.Link>
               )}
             </Nav>
@@ -66,19 +64,13 @@ const AppNavbar = () => {
             <Modal.Title id="signup-modal">
               <Nav variant="pills">
                 <Nav.Item>
-                  <Nav.Link
-                    className="modal-button-custom btn-outline-dark"
-                    eventKey="login"
-                  >
-                    LOGIN
+                  <Nav.Link className="modal-button-custom" eventKey="login">
+                    Log In
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link
-                    className="modal-button-custom btn-outline-dark"
-                    eventKey="signup"
-                  >
-                    SIGN UP
+                  <Nav.Link className="modal-button-custom" eventKey="signup">
+                    Sign Up
                   </Nav.Link>
                 </Nav.Item>
               </Nav>

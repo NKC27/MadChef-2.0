@@ -3,6 +3,7 @@ import { Form, Button, Alert } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
 import { ADD_USER } from '../utils/mutations';
 import Auth from '../utils/auth';
+import './auth-forms.scss';
 
 interface SignupFormData {
   username: string;
@@ -64,7 +65,12 @@ const SignupForm = () => {
 
   return (
     <>
-      <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
+      <Form
+        noValidate
+        validated={validated}
+        onSubmit={handleFormSubmit}
+        className="auth-form"
+      >
         <Alert
           dismissible
           onClose={() => setAlertDismissed(true)}
@@ -74,7 +80,7 @@ const SignupForm = () => {
           Something went wrong
         </Alert>
 
-        <Form.Group>
+        <Form.Group className="form-group">
           <Form.Label htmlFor="username">Username</Form.Label>
           <Form.Control
             type="text"
@@ -89,7 +95,7 @@ const SignupForm = () => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group>
+        <Form.Group className="form-group">
           <Form.Label htmlFor="email">Email</Form.Label>
           <Form.Control
             type="email"
@@ -104,7 +110,7 @@ const SignupForm = () => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group>
+        <Form.Group className="form-group">
           <Form.Label htmlFor="password">Password</Form.Label>
           <Form.Control
             type="password"
@@ -127,9 +133,9 @@ const SignupForm = () => {
             )
           }
           type="submit"
-          variant="success"
+          variant="primary"
         >
-          Submit
+          Sign Up
         </Button>
       </Form>
     </>

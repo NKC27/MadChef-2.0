@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect, type FormEvent } from 'react';
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
+import { FiSearch, FiBookmark, FiCheck } from 'react-icons/fi';
 
 import Auth from '../utils/auth';
 import { saveRecipeIds, getSavedRecipesIds } from '../utils/localStorage';
+import { hideBrokenImage } from '../utils/hideBrokenImage';
 
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { FIND_RECIPES_BY_INGREDIENTS } from '../utils/queries';
@@ -82,25 +84,36 @@ const SearchRecipes = () => {
 
   return (
     <>
-      <section className="search-hero text-light bg-dark">
+      <section className="search-hero">
         <Container className="searchLayout">
-          <h1>SEARCH FOR RECIPES</h1>
+          <p className="mc-eyebrow justify-content-center">Find a recipe</p>
+          <h1>What are you working with?</h1>
+          <p className="search-hero__subcopy">
+            Enter an ingredient you have on hand and we&rsquo;ll surface
+            recipes built around it.
+          </p>
 
-          <Form onSubmit={handleFormSubmit}>
-            <Row className="g-2">
-              <Col xs={12} md={8}>
+          <Form onSubmit={handleFormSubmit} className="search-form">
+            <Row className="g-2 justify-content-center">
+              <Col xs={12} md={7}>
                 <Form.Control
                   name="searchInput"
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                   type="text"
                   size="lg"
-                  placeholder="Already have an idea?"
+                  placeholder="e.g. chicken, chickpeas, spinach…"
                 />
               </Col>
 
-              <Col xs={12} md={4}>
-                <Button type="submit" variant="success" size="lg">
+              <Col xs={12} md={3}>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  className="w-100 d-flex align-items-center justify-content-center gap-2"
+                >
+                  <FiSearch aria-hidden="true" />
                   Search
                 </Button>
               </Col>
@@ -111,50 +124,64 @@ const SearchRecipes = () => {
 
       <Container className="search-body">
         <Row xs={1} md={2} lg={3} className="g-4">
-          {searchedRecipes.map((recipe) => (
-            <Col key={recipe.recipeId}>
-              <Card className="search-card mt-4 h-100" border="dark">
-                {recipe.image ? (
-                  <Card.Img
-                    src={recipe.image}
-                    alt={`The cover for ${recipe.title}`}
-                    variant="top"
-                  />
-                ) : null}
+          {searchedRecipes.map((recipe) => {
+            const isSaved = savedRecipeIds.some(
+              (savedRecipeId) => savedRecipeId === Number(recipe.recipeId),
+            );
 
-                <Card.Body>
-                  <Card.Title>{recipe.title}</Card.Title>
+            return (
+              <Col key={recipe.recipeId}>
+                <Card className="search-card h-100">
+                  {recipe.image ? (
+                    <Card.Img
+                      src={recipe.image}
+                      alt={`The cover for ${recipe.title}`}
+                      variant="top"
+                      onError={hideBrokenImage}
+                    />
+                  ) : null}
 
-                  <Card.Text>{recipe.description}</Card.Text>
+                  <Card.Body>
+                    <Card.Title>{recipe.title}</Card.Title>
 
-                  <Link
-                    to={`/recipe/${recipe.recipeId}`}
-                    className="btn btn-primary d-block mb-2"
-                  >
-                    SEE MORE
-                  </Link>
+                    {recipe.description && (
+                      <Card.Text>{recipe.description}</Card.Text>
+                    )}
 
-                  {Auth.loggedIn() && (
-                    <Button
-                      disabled={savedRecipeIds.some(
-                        (savedRecipeId) =>
-                          savedRecipeId === Number(recipe.recipeId),
-                      )}
-                      className="d-block w-100 btn-info"
-                      onClick={() => handleSaveRecipe(Number(recipe.recipeId))}
+                    <Link
+                      to={`/recipe/${recipe.recipeId}`}
+                      className="btn btn-outline-light d-block mb-2 mt-2"
                     >
-                      {savedRecipeIds.some(
-                        (savedRecipeId) =>
-                          savedRecipeId === Number(recipe.recipeId),
-                      )
-                        ? 'RECIPE SAVED'
-                        : 'SAVE RECIPE'}
-                    </Button>
-                  )}
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
+                      See More
+                    </Link>
+
+                    {Auth.loggedIn() && (
+                      <Button
+                        disabled={isSaved}
+                        className="d-flex align-items-center justify-content-center gap-2 w-100"
+                        variant={isSaved ? 'secondary' : 'primary'}
+                        onClick={() =>
+                          handleSaveRecipe(Number(recipe.recipeId))
+                        }
+                      >
+                        {isSaved ? (
+                          <>
+                            <FiCheck aria-hidden="true" />
+                            Recipe Saved
+                          </>
+                        ) : (
+                          <>
+                            <FiBookmark aria-hidden="true" />
+                            Save Recipe
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </Card.Body>
+                </Card>
+              </Col>
+            );
+          })}
         </Row>
       </Container>
     </>
