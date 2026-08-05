@@ -19,6 +19,10 @@ MadChef turns the ingredients you already have into recipes you can actually coo
 
 <https://github.com/NKC27/MadChef-2.0>
 
+🔗 **Live Demo**
+
+<https://madchef-5qwv.onrender.com>
+
 ---
 
 # Project Overview
@@ -246,7 +250,6 @@ npm start           # runs the compiled server (serves the built client too)
 
 - Automated test coverage (currently none — the app has been verified manually and via ad-hoc browser automation, not a real suite)
 - Code-splitting the client bundle (the full themed Bootstrap build plus icon set currently ships as one ~650KB chunk)
-- Deploy to a live environment (Render/Railway + Atlas) — not yet done, so there's no live demo link above
 - Persist ingredient search history in the Recipe Builder
 - CI pipeline running typecheck/build on every PR
 
