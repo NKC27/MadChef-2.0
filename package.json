@@ -1,35 +1,19 @@
 {
   "name": "madchef",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server/server.js",
+  "version": "2.0.0",
+  "description": "MadChef — find recipes from the ingredients you already have. MERN stack (React + TypeScript + Vite, GraphQL/Apollo, Express, MongoDB).",
+  "main": "server/dist/server.js",
   "scripts": {
-    "start": "node server/server.js",
-    "develop": "concurrently \"cd server && npm run watch\" \"cd client && npm start\"",
-    "install": "cd server && npm i && cd ../client && npm i",
-    "build": "cd client && npm run build"
+    "install": "npm install --prefix server && npm install --prefix client",
+    "dev": "concurrently -k -n server,client -c blue,green \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "build": "npm run build --prefix server && npm run build --prefix client",
+    "start": "node server/dist/server.js",
+    "typecheck": "npm run typecheck --prefix server && npm run typecheck --prefix client"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["mern", "graphql", "recipes", "typescript", "vite"],
+  "author": "Nicholas Clarke",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^5.1.0"
-  },
-  "dependencies": {
-    "@apollo/client": "^3.13.9",
-    "@emotion/react": "^11.9.3",
-    "@emotion/styled": "^11.9.3",
-    "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.8.4",
-    "apollo-client": "^2.6.10",
-    "dotenv": "^17.4.2",
-    "express": "^4.18.1",
-    "graphql": "^15.5.2",
-    "nodemon": "^2.0.16",
-    "react": "^18.1.0",
-    "react-bootstrap": "^1.6.8",
-    "react-dom": "^18.1.0",
-    "react-router-dom": "^5.3.4",
-    "wipeclean": "^1.1.2"
+    "concurrently": "^9.1.2"
   }
 }

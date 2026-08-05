@@ -1,0 +1,76 @@
+// Overrides Bootstrap's own Sass variables before compiling it, so every
+// stock component (Button, Card, Modal, Form, Navbar…) inherits the
+// MadChef dark/gold palette without needing per-component overrides.
+@import './variables';
+
+$primary: $mc-gold;
+$secondary: $mc-surface-raised;
+$success: $mc-success;
+$danger: $mc-danger;
+$info: #6ea8d8;
+$warning: #e0b45c;
+$light: $mc-surface;
+$dark: $mc-bg;
+
+$body-bg: $mc-bg;
+$body-color: $mc-text;
+$emphasis-color: $mc-text;
+$secondary-color: $mc-text-muted;
+
+$border-color: $mc-border;
+$border-radius: 0.85rem;
+$border-radius-sm: 0.6rem;
+$border-radius-lg: 1.25rem;
+$border-radius-xl: 1.75rem;
+$border-radius-pill: 999px;
+
+$font-family-sans-serif: $font-body;
+$font-family-base: $font-body;
+$headings-font-family: $font-display;
+$headings-font-weight: 600;
+$headings-color: $mc-text;
+
+$link-color: $mc-gold-bright;
+$link-hover-color: $mc-gold;
+$link-decoration: none;
+
+$card-bg: $mc-surface;
+$card-border-color: $mc-border;
+$card-border-radius: $radius-lg;
+$card-cap-bg: transparent;
+$card-color: $mc-text;
+
+$input-bg: $mc-surface-raised;
+$input-color: $mc-text;
+$input-border-color: $mc-border-strong;
+$input-focus-bg: $mc-surface-raised;
+$input-focus-color: $mc-text;
+$input-focus-border-color: $mc-gold;
+$input-placeholder-color: $mc-text-faint;
+$input-group-addon-bg: $mc-surface-raised;
+
+$modal-content-bg: $mc-surface;
+$modal-content-border-color: $mc-border;
+$modal-header-border-color: $mc-border;
+$modal-footer-border-color: $mc-border;
+$modal-backdrop-bg: #000;
+$modal-backdrop-opacity: 0.75;
+
+$navbar-dark-color: rgba($mc-text, 0.75);
+$navbar-dark-hover-color: $mc-text;
+$navbar-dark-active-color: $mc-gold-bright;
+
+$dropdown-bg: $mc-surface-raised;
+$dropdown-border-color: $mc-border;
+$dropdown-link-color: $mc-text;
+$dropdown-link-hover-bg: $mc-surface-hover;
+
+$btn-font-weight: 600;
+$btn-border-radius: $radius-full;
+$btn-border-radius-sm: $radius-full;
+$btn-border-radius-lg: $radius-full;
+$btn-focus-box-shadow: 0 0 0 0.2rem rgba($mc-gold, 0.35);
+
+$spinner-border-width: 0.2em;
+
+@import '../../node_modules/bootstrap/scss/bootstrap';

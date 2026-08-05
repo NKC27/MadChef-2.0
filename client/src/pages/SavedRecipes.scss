@@ -1,0 +1,155 @@
+@import '../styles/variables';
+
+.saved-recipes-page {
+  min-height: 100vh;
+
+  .saved-hero {
+    background: $mc-bg-alt;
+    border-bottom: 1px solid $mc-border-soft;
+    padding: $space-2xl 0 $space-xl;
+    text-align: center;
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: $mc-text-muted;
+      margin-top: 0;
+    }
+  }
+
+  .saved-container {
+    padding-top: $space-xl;
+    padding-bottom: $space-2xl;
+  }
+
+  .saved-title {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 2rem;
+    margin-top: 20px;
+    margin-bottom: 35px;
+  }
+}
+
+.saved-loading {
+  padding-top: 120px;
+}
+
+.saved-card {
+  overflow: hidden;
+  height: 100%;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+
+  img {
+    height: 230px;
+    object-fit: cover;
+  }
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: $shadow-lg;
+    border-color: $mc-border-strong;
+  }
+
+  .card-title {
+    font-family: $font-display;
+    font-size: 1.2rem;
+  }
+
+  .card-text {
+    color: $mc-text-muted;
+    line-height: 1.5;
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    font-weight: 600;
+    transition: transform 0.15s ease;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.75;
+    }
+  }
+}
+
+.recipe-meta {
+  display: flex;
+  gap: 10px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: $mc-surface-raised;
+    border: 1px solid $mc-border-soft;
+    color: $mc-gold-bright;
+    padding: 5px 12px;
+    border-radius: $radius-full;
+    font-weight: 600;
+    font-size: 0.8rem;
+
+    svg {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.empty-state {
+  background: $mc-surface;
+  border: 1px solid $mc-border-soft;
+  padding: 60px;
+  text-align: center;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+
+  &__icon {
+    font-size: 2.5rem;
+    color: $mc-gold-dim;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+
+  p {
+    color: $mc-text-muted;
+    margin-bottom: 25px;
+  }
+
+  .btn {
+    font-weight: 700;
+    padding: 10px 28px;
+  }
+}
+
+// Delete-confirmation modal — kept simple, matches card radius/shadow language
+.modal-content {
+  box-shadow: $shadow-lg;
+}
+
+.modal-header {
+  .modal-title {
+    font-family: $font-display;
+    font-weight: 600;
+  }
+}
