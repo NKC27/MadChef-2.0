@@ -14,7 +14,7 @@
   "author": "Nicholas Clarke",
   "license": "ISC",
   "engines": {
-    "node": ">=18"
+    "node": "22.x"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
