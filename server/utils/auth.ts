@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import type { Request } from 'express';
 
-const secret = process.env.JWT_SECRET as string;
 const expiration = '2h';
 
 export interface TokenPayload {
@@ -29,7 +28,9 @@ export const authMiddleware = async ({
 
   if (token) {
     try {
-      const decoded = jwt.verify(token, secret) as { data: TokenPayload };
+      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
+        data: TokenPayload;
+      };
       user = decoded.data;
     } catch (err) {
       console.warn('Invalid token');
@@ -41,5 +42,7 @@ export const authMiddleware = async ({
 
 export const signToken = ({ username, email, _id }: TokenPayload): string => {
   const payload = { username, email, _id };
-  return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
+  return jwt.sign({ data: payload }, process.env.JWT_SECRET as string, {
+    expiresIn: expiration,
+  });
 };

@@ -18,6 +18,8 @@ const typeDefs = `
     title: String
     image: String
     link: String
+    readyInMinutes: Int
+    servings: Int
   }
 
   type Ingredient {
@@ -44,6 +46,8 @@ const typeDefs = `
     description: String
     image: String
     link: String
+    readyInMinutes: Int
+    servings: Int
   }
 
   type Query {

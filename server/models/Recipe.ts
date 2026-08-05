@@ -6,6 +6,8 @@ export interface IRecipe {
   title: string;
   image?: string;
   link?: string;
+  readyInMinutes?: number;
+  servings?: number;
 }
 
 const recipeSchema = new Schema<IRecipe>({
@@ -26,6 +28,12 @@ const recipeSchema = new Schema<IRecipe>({
   },
   link: {
     type: String,
+  },
+  readyInMinutes: {
+    type: Number,
+  },
+  servings: {
+    type: Number,
   },
 });
 

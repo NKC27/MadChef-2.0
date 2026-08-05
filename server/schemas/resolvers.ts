@@ -17,6 +17,8 @@ interface RecipeInput {
   description?: string;
   image?: string;
   link?: string;
+  readyInMinutes?: number;
+  servings?: number;
 }
 
 const resolvers = {
